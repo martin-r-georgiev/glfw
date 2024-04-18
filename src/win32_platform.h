@@ -69,6 +69,9 @@
 #include <dinput.h>
 #include <xinput.h>
 #include <dbt.h>
+#include <uxtheme.h>
+#include <vssym32.h>
+#include <winuser.h>
 
 // HACK: Define macros that some windows.h variants don't
 #ifndef WM_MOUSEHWHEEL
@@ -217,6 +220,11 @@ typedef enum
 // HACK: Define macros that some dinput.h variants don't
 #ifndef DIDFT_OPTIONAL
  #define DIDFT_OPTIONAL 0x80000000
+#endif
+
+// HACK: Define SM_CXPADDEDBORDER as its missing in some winuser.h variants
+#ifndef SM_CXPADDEDBORDER
+ #define SM_CXPADDEDBORDER 92
 #endif
 
 #define WGL_NUMBER_PIXEL_FORMATS_ARB 0x2000
@@ -525,6 +533,21 @@ typedef struct _GLFWcursorWin32
     HCURSOR             handle;
 } _GLFWcursorWin32;
 
+// Win32-specific custom titlebar button rect data
+//
+typedef struct {
+    RECT closeButton;
+    RECT maximizeButton;
+    RECT minimizeButton;
+} _GLFWtitlebarButtonRects;
+
+// Win32-specific custom titlebar hovered button types
+typedef enum {
+    TitlebarHoveredButton_None,
+    TitlebarHoveredButton_Minimize,
+    TitlebarHoveredButton_Maximize,
+    TitlebarHoveredButton_Close,
+} _GLFWtitlebarHoveredButton;
 
 GLFWbool _glfwConnectWin32(int platformID, _GLFWplatform* platform);
 int _glfwInitWin32(void);
@@ -573,6 +596,7 @@ void _glfwSetWindowResizableWin32(_GLFWwindow* window, GLFWbool enabled);
 void _glfwSetWindowDecoratedWin32(_GLFWwindow* window, GLFWbool enabled);
 void _glfwSetWindowFloatingWin32(_GLFWwindow* window, GLFWbool enabled);
 void _glfwSetWindowMousePassthroughWin32(_GLFWwindow* window, GLFWbool enabled);
+void _glfwSetWindowShowTitlebarWin32(_GLFWwindow* window, GLFWbool enabled);
 float _glfwGetWindowOpacityWin32(_GLFWwindow* window);
 void _glfwSetWindowOpacityWin32(_GLFWwindow* window, float opacity);
 

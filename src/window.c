@@ -128,6 +128,15 @@ void _glfwInputFramebufferSize(_GLFWwindow* window, int width, int height)
         window->callbacks.fbsize((GLFWwindow*) window, width, height);
 }
 
+// Notifies shared code that mouse titlebar hittest needs to be resolved
+//
+void _glfwInputTitlebarHitTest(_GLFWwindow* window, int posX, int posY,
+                               int* hit)
+{
+    if (window->callbacks.tbHitTest)
+        window->callbacks.tbHitTest((GLFWwindow*)window, posX, posY, hit);
+}
+
 // Notifies shared code that a window content scale has changed
 // The scale is specified as the ratio between the current and default DPI
 //
@@ -269,6 +278,7 @@ void glfwDefaultWindowHints(void)
     _glfw.hints.window.resizable    = GLFW_TRUE;
     _glfw.hints.window.visible      = GLFW_TRUE;
     _glfw.hints.window.decorated    = GLFW_TRUE;
+    _glfw.hints.window.showTitlebar = GLFW_TRUE;
     _glfw.hints.window.focused      = GLFW_TRUE;
     _glfw.hints.window.autoIconify  = GLFW_TRUE;
     _glfw.hints.window.centerCursor = GLFW_TRUE;
@@ -351,6 +361,9 @@ GLFWAPI void glfwWindowHint(int hint, int value)
             return;
         case GLFW_DECORATED:
             _glfw.hints.window.decorated = value ? GLFW_TRUE : GLFW_FALSE;
+            return;
+        case GLFW_SHOW_TITLEBAR:
+            _glfw.hints.window.showTitlebar = value ? GLFW_TRUE : GLFW_FALSE;
             return;
         case GLFW_FOCUSED:
             _glfw.hints.window.focused = value ? GLFW_TRUE : GLFW_FALSE;
@@ -906,6 +919,8 @@ GLFWAPI int glfwGetWindowAttrib(GLFWwindow* handle, int attrib)
             return window->resizable;
         case GLFW_DECORATED:
             return window->decorated;
+        case GLFW_SHOW_TITLEBAR:
+            return _glfw.hints.window.showTitlebar;
         case GLFW_FLOATING:
             return window->floating;
         case GLFW_AUTO_ICONIFY:
@@ -965,6 +980,12 @@ GLFWAPI void glfwSetWindowAttrib(GLFWwindow* handle, int attrib, int value)
             window->decorated = value;
             if (!window->monitor)
                 _glfw.platform.setWindowDecorated(window, value);
+            return;
+
+        case GLFW_SHOW_TITLEBAR:
+            _glfw.hints.window.showTitlebar = value;
+            if (!window->monitor)
+                _glfw.platform.setWindowShowTitlebar(window, value);
             return;
 
         case GLFW_FLOATING:
@@ -1150,6 +1171,17 @@ GLFWAPI GLFWframebuffersizefun glfwSetFramebufferSizeCallback(GLFWwindow* handle
 
     _GLFW_SWAP(GLFWframebuffersizefun, window->callbacks.fbsize, cbfun);
     return cbfun;
+}
+
+GLFWAPI GLFWtitlebarhittestfun glfwSetTitlebarHitTestCallback(
+    GLFWwindow* handle, GLFWtitlebarhittestfun tbhtfun)
+{
+    _GLFWwindow* window = (_GLFWwindow*)handle;
+    assert(window != NULL);
+
+    _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
+    _GLFW_SWAP(GLFWtitlebarhittestfun, window->callbacks.tbHitTest, tbhtfun);
+    return tbhtfun;
 }
 
 GLFWAPI GLFWwindowcontentscalefun glfwSetWindowContentScaleCallback(GLFWwindow* handle,

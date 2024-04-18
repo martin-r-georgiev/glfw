@@ -408,6 +408,11 @@ void _glfwSetWindowMousePassthroughNull(_GLFWwindow* window, GLFWbool enabled)
 {
 }
 
+void _glfwSetWindowShowTitlebarNull(_GLFWwindow* window, GLFWbool enabled)
+{
+    window->null.showTitlebar = enabled;
+}
+
 float _glfwGetWindowOpacityNull(_GLFWwindow* window)
 {
     return window->null.opacity;
