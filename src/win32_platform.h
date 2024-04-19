@@ -110,6 +110,7 @@
 #ifndef _WIN32_WINNT_WIN8
  #define _WIN32_WINNT_WIN8 0x0602
 #endif
+
 #ifndef WM_GETDPISCALEDSIZE
  #define WM_GETDPISCALEDSIZE 0x02e4
 #endif
@@ -187,6 +188,10 @@ typedef enum
 // Windows 10 Creators Update
 #define _glfwIsWindows10Version1703OrGreaterWin32() \
     _glfwIsWindows10BuildOrGreaterWin32(15063)
+
+// Windows 11 or later (Version 21H2, OS build 22000)
+#define _glfwIsWindows11OrGreaterWin32() \
+    _glfwIsWindows10BuildOrGreaterWin32(22000)
 
 // HACK: Define macros that some xinput.h variants don't
 #ifndef XINPUT_CAPS_WIRELESS

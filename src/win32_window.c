@@ -1155,6 +1155,8 @@ static LRESULT CALLBACK windowProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 
             if (_glfwWindowMaximizedWin32(window))
                 requestedClientRect->top += padding;
+            else if (_glfwIsWindows11OrGreaterWin32())
+                requestedClientRect->top += 1;
 
             return 0;
         }
