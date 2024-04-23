@@ -531,6 +531,22 @@ static void maximizeWindowManually(_GLFWwindow* window)
                  SWP_NOACTIVATE | SWP_NOZORDER | SWP_FRAMECHANGED);
 }
 
+static HMENU GetUpdatedSystemMenu(HWND hwnd)
+{
+    HMENU menu = GetSystemMenu(hwnd, FALSE);
+
+    bool maximized = IsZoomed(hwnd);
+    EnableMenuItem(menu, SC_SIZE, maximized ? MF_GRAYED : MF_ENABLED);
+    EnableMenuItem(menu, SC_MOVE, maximized ? MF_GRAYED : MF_ENABLED);
+    EnableMenuItem(menu, SC_MINIMIZE, MF_ENABLED);
+    EnableMenuItem(menu, SC_MAXIMIZE, maximized ? MF_GRAYED : MF_ENABLED);
+    EnableMenuItem(menu, SC_CLOSE, MF_ENABLED);
+    EnableMenuItem(menu, SC_RESTORE, maximized ? MF_ENABLED : MF_GRAYED);
+    SetMenuDefaultItem(menu, SC_CLOSE, FALSE);
+
+    return menu;
+}
+
 // Window procedure for user-created windows
 //
 static LRESULT CALLBACK windowProc(HWND hWnd, UINT uMsg, WPARAM wParam,
@@ -903,6 +919,31 @@ static LRESULT CALLBACK windowProc(HWND hWnd, UINT uMsg, WPARAM wParam,
             if (uMsg == WM_XBUTTONDOWN || uMsg == WM_XBUTTONUP)
                 return TRUE;
 
+            return 0;
+        }
+
+        case WM_NCRBUTTONUP:
+        {
+            if (_glfw.hints.window.showTitlebar)
+                break;
+
+            // HACK: Restore the system menu when the custom title bar is right-clicked
+            if (wParam == HTCAPTION)
+            {
+                // Open the system menu at the cursor position
+                HMENU hMenu = GetUpdatedSystemMenu(hWnd);
+                if (hMenu)
+                {
+                    UINT uFlags = TPM_RIGHTBUTTON | TPM_NONOTIFY | TPM_RETURNCMD;
+                    if (GetSystemMetrics(SM_MENUDROPALIGNMENT))
+                        uFlags |= TPM_RIGHTALIGN;
+
+                    WPARAM cmd = TrackPopupMenu(hMenu, uFlags, LOWORD(lParam),
+                                   HIWORD(lParam), 0, hWnd, NULL);
+                    if (cmd)
+                        PostMessageW(hWnd, WM_SYSCOMMAND, cmd, 0);
+                }
+            }
             return 0;
         }
 
