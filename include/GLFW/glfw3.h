@@ -1783,7 +1783,7 @@ typedef void (* GLFWframebuffersizefun)(GLFWwindow* window, int width, int heigh
  *
  *  @ingroup window
  */
-typedef void (*GLFWtitlebarhittestfun)(GLFWwindow*, int, int, int*);
+typedef void (*GLFWtitlebarhittestfun)(GLFWwindow* window, int xpos, int ypos, int* hit);
 
 /*! @brief The function pointer type for window content scale callbacks.
  *

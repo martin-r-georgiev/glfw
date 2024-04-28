@@ -130,7 +130,7 @@ void _glfwInputFramebufferSize(_GLFWwindow* window, int width, int height)
 
 // Notifies shared code that mouse titlebar hittest needs to be resolved
 //
-void _glfwInputTitlebarHitTest(_GLFWwindow* window, double xpos, double ypos,
+void _glfwInputTitlebarHitTest(_GLFWwindow* window, int xpos, int ypos,
                                int* hit)
 {
     if (window->callbacks.tbHitTest)

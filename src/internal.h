@@ -925,7 +925,7 @@ void _glfwInputWindowFocus(_GLFWwindow* window, GLFWbool focused);
 void _glfwInputWindowPos(_GLFWwindow* window, int xpos, int ypos);
 void _glfwInputWindowSize(_GLFWwindow* window, int width, int height);
 void _glfwInputFramebufferSize(_GLFWwindow* window, int width, int height);
-void _glfwInputTitlebarHitTest(_GLFWwindow* window, double xpos, double ypos, int* hit);
+void _glfwInputTitlebarHitTest(_GLFWwindow* window, int xpos, int ypos, int* hit);
 void _glfwInputWindowContentScale(_GLFWwindow* window,
                                   float xscale, float yscale);
 void _glfwInputWindowIconify(_GLFWwindow* window, GLFWbool iconified);
