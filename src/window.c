@@ -130,11 +130,11 @@ void _glfwInputFramebufferSize(_GLFWwindow* window, int width, int height)
 
 // Notifies shared code that mouse titlebar hittest needs to be resolved
 //
-void _glfwInputTitlebarHitTest(_GLFWwindow* window, int posX, int posY,
+void _glfwInputTitlebarHitTest(_GLFWwindow* window, double xpos, double ypos,
                                int* hit)
 {
     if (window->callbacks.tbHitTest)
-        window->callbacks.tbHitTest((GLFWwindow*)window, posX, posY, hit);
+        window->callbacks.tbHitTest((GLFWwindow*)window, xpos, ypos, hit);
 }
 
 // Notifies shared code that a window content scale has changed
